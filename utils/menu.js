@@ -14,6 +14,9 @@ const menuPrompt = () => {
                 'Add a Role',
                 'Add an Employee',
                 'Update an Employee Role',
+                'Delete a Department',
+                'Delete a Role',
+                'Delete an Employee',
                 'Quit'
                 // *BONUS*
                 // update employee managers, 

@@ -1,22 +1,7 @@
 const inquirer = require("inquirer");
 const db = require('../db/connection');
+const role = require('./role');
 
-const updateEmployeeQuestions = [
-    {
-        type: 'input', // needs to be a list
-        name: 'updateEmployeeName',
-        message: "Which employee's role do you want to update?",
-        // choices need to be populated with already existing employees
-        when: (answers) => answers.menu === 'Update an Employee Role'
-    },
-    {
-        type: 'input', // needs to be a list
-        name: 'updateEmployeeRole',
-        message: "What role do you want to assign the selected employee?",
-        // choices need to be populated with already existing employees
-        when: (answers) => answers.menu === 'Update an Employee Role'
-    }
-]
 
 const employeeAddPrompt = (roleRows, employeeRows) => {
     let newRoleRows = roleRows.map(({ id, title }) => {
@@ -65,9 +50,57 @@ const employeeAddPrompt = (roleRows, employeeRows) => {
     return inquirer.prompt(addEmployeeQuestions);
 }
 
+const employeeDeletePrompt = (employeeRows) => {
+    let newEmployeeRows = employeeRows.map(({ id, first_name, last_name }) => {
+        return {
+            name: first_name + " " + last_name,
+            value: id
+        }
+    });
+    const deleteEmployeeQuestions = [
+        {
+            type: 'list',
+            name: 'deletedEmployee',
+            message: "Which employee would you like to delete?",
+            choices: newEmployeeRows,
+        }
+    ]
+    return inquirer.prompt(deleteEmployeeQuestions);
+}
+
+const updateEmployeeRolePrompt = (roleRows, employeeRows) => {
+    let newRoleRows = roleRows.map(({ id, title }) => {
+        return {
+            name: title,
+            value: id
+        }
+    });
+    let newEmployeeRows = employeeRows.map(({ id, first_name, last_name }) => {
+        return {
+            name: first_name + " " + last_name,
+            value: id
+        }
+    });
+    const updateEmployeeRoleQuestions = [
+        {
+            type: 'list', // needs to be a list
+            name: 'updatedEmployeeName',
+            message: "Which employee's role do you want to update?",
+            choices: newEmployeeRows
+        },
+        {
+            type: 'list', // needs to be a list
+            name: 'updatedEmployeeRole',
+            message: "What role do you want to assign the selected employee?",
+            choices: newRoleRows
+        }
+    ]
+    return inquirer.prompt(updateEmployeeRoleQuestions);
+}
+
 // employee ids, first names, last names, job titles, departments, salaries, and managers
 const getEmployees = () => {
-    let sql = `SELECT employee.id, concat(employee.first_name, ' ', employee.last_name) AS name, role.title, department.name AS department, role.salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee employee
+    let sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee employee
         LEFT JOIN role ON employee.role_id = role.id 
         LEFT JOIN department on department.id = role.department_id
         LEFT JOIN employee manager ON employee.manager_id = manager.id`
@@ -83,7 +116,7 @@ const displayEmployees = (init) => {
 }
 
 const addEmployee = async (init) => {
-    let [roleRows] = await getRoles();
+    let [roleRows] = await role.getRoles();
     let [employeeRows] = await getEmployees();
     employeeAddPrompt(roleRows, employeeRows)
         .then((answers) => {
@@ -101,9 +134,34 @@ const addEmployee = async (init) => {
         })
 }
 
+const updateEmployeeRole = async (init) => {
+    let [roleRows] = await role.getRoles();
+    let [employeeRows] = await getEmployees();
+    updateEmployeeRolePrompt(roleRows, employeeRows)
+        .then((answers) => {
+            let sql = `UPDATE employee SET role_id = (?) WHERE employee.id = (?)`;
+            let params = [answers.updatedEmployeeRole, answers.updatedEmployeeName]
+            db.query(sql, params);
+            init()
+        })
+}
+
+const deleteEmployee = async (init) => {
+    let [employeeRows] = await getEmployees();
+    employeeDeletePrompt(employeeRows)
+        .then((answers) => {
+            let sql = `DELETE FROM employee WHERE id = (?)`;
+            let params = [answers.deletedEmployee];
+            db.query(sql, params);
+            init();
+        })
+}
+
 module.exports = {
     employeeAddPrompt,
     getEmployees,
     displayEmployees,
-    addEmployee
+    addEmployee,
+    updateEmployeeRole,
+    deleteEmployee
 }

@@ -1,8 +1,8 @@
 const db = require('./db/connection');
 const cTable = require('console.table');
-const { displayDepartments, addDepartment } = require('./utils/department');
-const { displayRoles, addRole } = require('./utils/role');
-const { displayEmployees, addEmployee } = require('./utils/employee')
+const dept = require('./utils/department');
+const role = require('./utils/role');
+const emp = require('./utils/employee')
 const { menuPrompt } = require('./utils/menu')
 
 db.connect(err => {
@@ -15,24 +15,34 @@ const init = () => {
         .then((answers) => {
             switch (answers.menu) {
                 case 'View All Departments': // done
-                    displayDepartments(init)
+                    dept.displayDepartments(init)
                     break;
                 case 'View All Roles': // done
-                    displayRoles(init);
+                    role.displayRoles(init);
                     break;
                 case 'View All Employees': // done
-                    displayEmployees(init);
+                    emp.displayEmployees(init);
                     break;
                 case 'Add a Department': // done
-                    addDepartment(init);
+                    dept.addDepartment(init);
                     break;
                 case 'Add a Role': // done
-                    addRole(init);
+                    role.addRole(init);
                     break;
                 case 'Add an Employee': //done
-                    addEmployee(init);
+                    emp.addEmployee(init);
                     break;
                 case 'Update an Employee Role':
+                    emp.updateEmployeeRole(init); // done
+                    break;
+                case 'Delete a Department':
+                    dept.deleteDepartment(init); // done
+                    break;
+                case 'Delete a Role':
+                    role.deleteRole(init); // done
+                    break;
+                case 'Delete an Employee':
+                    emp.deleteEmployee(init); // done
                     break;
                 case 'Quit':
                     process.exit();
