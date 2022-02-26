@@ -1,6 +1,6 @@
 # Employee Tracker
 
-The aim of this project was
+The aim of this project was to create an interactive command line interface be able to view and manage the departments, roles, and employees in a company database
 
 ## Table of Contents
 [Technologies Used](#technologies-used) <br>
@@ -11,11 +11,10 @@ The aim of this project was
 [Questions](#questions) <br>
 
 ## Technologies Used
-* 
-* 
-* 
-
-with a focus on 
+* JavaScript
+* Node.js
+* Inquirer
+* SQL
 
 ---
 
@@ -25,12 +24,12 @@ Navigate to the root directory in the terminal and initialize the project with *
 ---
 
 ## Use
-Navigate to the root directory in the terminal and type **node index.js** to run the project
+Navigate to the root directory in the terminal and type **npm start** to run the project
 
 ---
 
 ## Tests
-Navigate to the root directory in the terminal and type **npm run test** to run the project
+There are no formal tests for this project
 
 ---
 

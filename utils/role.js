@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const db = require('../db/connection');
 const dept = require('./department');
 
+// inquirer questions and prompt to add a new role
 const roleAddPrompt = (rows) => {
     let newRows = rows.map(({ id, name }) => {
         return {
@@ -31,6 +32,7 @@ const roleAddPrompt = (rows) => {
     return inquirer.prompt(roleQuestions);
 }
 
+// inquirer questions and prompt to delete an existing role
 const roleDeletePrompt = (roleRows) => {
     let newRoleRows = roleRows.map(({ id, title }) => {
         return {
@@ -49,13 +51,14 @@ const roleDeletePrompt = (roleRows) => {
     return inquirer.prompt(deleteRoleQuestions);
 }
 
-// job title, role id, the department that role belongs to, and the salary
+// returns a promise of all the roles in the role table
 const getRoles = () => {
     let sql = `SELECT role.id, role.title, department.name AS department, role.salary FROM role 
         LEFT JOIN department ON role.department_id = department.id`
     return db.promise().query(sql)
 }
 
+// gets all roles and displays the results in a table in the console
 const displayRoles = (init) => {
     getRoles()
         .then(([rows]) => {
@@ -64,6 +67,7 @@ const displayRoles = (init) => {
         })
 }
 
+// prompts the user to add a role then inserts the answers into the role table
 const addRole = (init) => {
     dept.getDepartments().then(([rows]) => {
         roleAddPrompt(rows)
@@ -77,6 +81,7 @@ const addRole = (init) => {
     })
 }
 
+// prompts the user to select an existing role then deletes the role from the role table
 const deleteRole = async (init) => {
     let [roleRows] = await getRoles();
     roleDeletePrompt(roleRows)

@@ -1,5 +1,6 @@
 const inquirer = require("inquirer");
 
+// inquirer questions and prompt for the main menu
 const menuPrompt = () => {
     const menuQuestion = [
         {

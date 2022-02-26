@@ -2,7 +2,7 @@ const inquirer = require("inquirer");
 const db = require('../db/connection');
 const role = require('./role');
 
-
+// inquirer questions and prompt to add a new employee
 const employeeAddPrompt = (roleRows, employeeRows) => {
     let newRoleRows = roleRows.map(({ id, title }) => {
         return {
@@ -50,6 +50,7 @@ const employeeAddPrompt = (roleRows, employeeRows) => {
     return inquirer.prompt(addEmployeeQuestions);
 }
 
+// inquirer questions and prompt to delete an existing employee
 const employeeDeletePrompt = (employeeRows) => {
     let newEmployeeRows = employeeRows.map(({ id, first_name, last_name }) => {
         return {
@@ -68,6 +69,7 @@ const employeeDeletePrompt = (employeeRows) => {
     return inquirer.prompt(deleteEmployeeQuestions);
 }
 
+// inquirer questions and prompt to update an employee's role
 const updateEmployeeRolePrompt = (roleRows, employeeRows) => {
     let newRoleRows = roleRows.map(({ id, title }) => {
         return {
@@ -98,6 +100,7 @@ const updateEmployeeRolePrompt = (roleRows, employeeRows) => {
     return inquirer.prompt(updateEmployeeRoleQuestions);
 }
 
+// inquirer questions and prompt to update an employee's manager
 const updateEmployeeManagerPrompt = (employeeRows) => {
     let newEmployeeRows = employeeRows.map(({ id, first_name, last_name }) => {
         return {
@@ -122,7 +125,7 @@ const updateEmployeeManagerPrompt = (employeeRows) => {
     return inquirer.prompt(updateEmployeeRoleQuestions);
 }
 
-// employee ids, first names, last names, job titles, departments, salaries, and managers
+// returns a promise of all the employees in the employee table
 const getEmployees = () => {
     let sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee employee
         LEFT JOIN role ON employee.role_id = role.id 
@@ -131,6 +134,7 @@ const getEmployees = () => {
     return db.promise().query(sql)
 }
 
+// returns a promise of all the employees in the employee table ordered by manager
 const getEmpByManager = () => {
     let sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee employee
         LEFT JOIN role ON employee.role_id = role.id 
@@ -140,6 +144,7 @@ const getEmpByManager = () => {
     return db.promise().query(sql)
 }
 
+// returns a promise of all the employees in the employee table ordered by department
 const getEmpByDepartment = () => {
     let sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee employee
         LEFT JOIN role ON employee.role_id = role.id 
@@ -149,6 +154,7 @@ const getEmpByDepartment = () => {
     return db.promise().query(sql)
 }
 
+// gets all employees and displays the results in a table in the console
 const displayEmployees = (init) => {
     getEmployees()
         .then(([rows]) => {
@@ -157,6 +163,7 @@ const displayEmployees = (init) => {
         })
 }
 
+// gets all employees ordered by manager and displays the results in a table in the console
 const displayEmpByManager = (init) => {
     getEmpByManager()
         .then(([rows]) => {
@@ -165,6 +172,7 @@ const displayEmpByManager = (init) => {
         })
 }
 
+// gets all employees ordered by department and displays the results in a table in the console
 const displayEmpByDepartment = (init) => {
     getEmpByDepartment()
         .then(([rows]) => {
@@ -173,6 +181,7 @@ const displayEmpByDepartment = (init) => {
         })
 }
 
+// prompts the user to add an employee then inserts the answers into the employee table
 const addEmployee = async (init) => {
     let [roleRows] = await role.getRoles();
     let [employeeRows] = await getEmployees();
@@ -192,6 +201,7 @@ const addEmployee = async (init) => {
         })
 }
 
+// prompts the user to update an employee's role then updates the employee in the employee table
 const updateEmployeeRole = async (init) => {
     let [roleRows] = await role.getRoles();
     let [employeeRows] = await getEmployees();
@@ -204,6 +214,7 @@ const updateEmployeeRole = async (init) => {
         })
 }
 
+// prompts the user to update an employee's manager then updates the employee in the employee table
 const updateEmployeeManager = async (init) => {
     let [employeeRows] = await getEmployees();
     updateEmployeeManagerPrompt(employeeRows)
@@ -216,6 +227,7 @@ const updateEmployeeManager = async (init) => {
         })
 }
 
+// prompts the user to select an existing employee then deletes that employee from the employee table
 const deleteEmployee = async (init) => {
     let [employeeRows] = await getEmployees();
     employeeDeletePrompt(employeeRows)
