@@ -13,6 +13,7 @@ const menuPrompt = () => {
                 'View All Employees',
                 'View Employees by Manager',
                 'View Employees by Department',
+                'View Department Budget',
                 'Add a Department',
                 'Add a Role',
                 'Add an Employee',

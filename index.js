@@ -29,6 +29,9 @@ const init = () => {
                 case 'View Employees by Department':
                     emp.displayEmpByDepartment(init); // done 
                     break;
+                case 'View Department Budget':
+                    dept.displayDepartmentBudget(init); // done 
+                    break;
                 case 'Add a Department': // done
                     dept.addDepartment(init);
                     break;

@@ -62,7 +62,9 @@ const getRoles = () => {
 const displayRoles = (init) => {
     getRoles()
         .then(([rows]) => {
+            console.log('\n');
             console.table(rows);
+            console.log('\n');
             init()
         })
 }

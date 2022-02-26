@@ -158,7 +158,9 @@ const getEmpByDepartment = () => {
 const displayEmployees = (init) => {
     getEmployees()
         .then(([rows]) => {
+            console.log('\n');
             console.table(rows);
+            console.log('\n');;
             init()
         })
 }
@@ -167,7 +169,9 @@ const displayEmployees = (init) => {
 const displayEmpByManager = (init) => {
     getEmpByManager()
         .then(([rows]) => {
+            console.log('\n');
             console.table(rows);
+            console.log('\n');;
             init()
         })
 }
@@ -176,7 +180,9 @@ const displayEmpByManager = (init) => {
 const displayEmpByDepartment = (init) => {
     getEmpByDepartment()
         .then(([rows]) => {
+            console.log('\n');
             console.table(rows);
+            console.log('\n');;
             init()
         })
 }

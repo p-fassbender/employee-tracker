@@ -19,7 +19,12 @@ The aim of this project was to create an interactive command line interface be a
 ---
 
 ## Installation
-Navigate to the root directory in the terminal and initialize the project with **npm install** to install all the proper node module dependencies
+Navigate to the root directory in the terminal and initialize the project with **npm install** to install all the proper node module dependencies. </br>
+Navigate to the root directory in the terminal and log into mysql with **mysql -u &lt;user> -p** and enter your mysql password. </br>
+Initialize the database and tables in mysql using the following commands
+* **source db/db.sql**
+* **source db/schema.sql**
+* **source db/seeds.sql**
 
 ---
 

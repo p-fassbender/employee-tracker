@@ -1,6 +1,25 @@
 const inquirer = require("inquirer");
 const db = require('../db/connection');
 
+// inquirer questions and prompt get the budget for an existing department
+const departmentBudgetPrompt = (departmentRows) => {
+    let newDepartmentRows = departmentRows.map(({ id, name }) => {
+        return {
+            name: name,
+            value: id
+        }
+    });
+    const departmentBudgetQuestions = [
+        {
+            type: 'list',
+            name: 'budgetDepartment',
+            message: 'Which department do you want to see the budget for?',
+            choices: newDepartmentRows
+        }
+    ]
+    return inquirer.prompt(departmentBudgetQuestions);
+}
+
 // inquirer questions and prompt to add a new department
 const departmentAddPrompt = () => {
     const departmentQuestions = [
@@ -38,12 +57,38 @@ const getDepartments = () => {
     return db.promise().query(sql)
 }
 
+// returns a promise of the sum of all the roles salaries in an individual department
+const getBudget = async (answers) => {
+    let sql = `SELECT department.name AS department, SUM(role.salary) AS budget FROM role 
+        RIGHT JOIN department ON role.department_id = department.id
+        WHERE role.department_id = (?)`
+    let params = [answers.budgetDepartment];
+    return db.promise().query(sql, params)
+}
+
 // gets all departments and displays the results in a table in the console
 const displayDepartments = (init) => {
     getDepartments()
         .then(([rows]) => {
+            console.log('\n');
             console.table(rows);
+            console.log('\n');
             init()
+        })
+}
+
+// prompts the user to select an existing department, gets the budget from the answer, and displays the results in a table in the console
+const displayDepartmentBudget = async (init) => {
+    let [departmentRows] = await getDepartments();
+    departmentBudgetPrompt(departmentRows)
+        .then((answers) => {
+            getBudget(answers)
+                .then(([rows]) => {
+                    console.log('\n');
+                    console.table(rows);
+                    console.log('\n');
+                    init();
+                })
         })
 }
 
@@ -75,6 +120,7 @@ module.exports = {
     departmentAddPrompt,
     getDepartments,
     displayDepartments,
+    displayDepartmentBudget,
     addDepartment,
     deleteDepartment
 }
