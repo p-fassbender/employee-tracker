@@ -24,7 +24,9 @@ Navigate to the root directory in the terminal and log into mysql with **mysql -
 Initialize the database and tables in mysql using the following commands
 * **source db/db.sql**
 * **source db/schema.sql**
-* **source db/seeds.sql**
+* **source db/seeds.sql** </br>
+
+Update the **.envExample** file to include your own username and password for mysql and then change the file name to be **.env** instead of .envExample
 
 ---
 
