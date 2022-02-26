@@ -10,21 +10,17 @@ const menuPrompt = () => {
                 'View All Departments',
                 'View All Roles',
                 'View All Employees',
+                'View Employees by Manager',
+                'View Employees by Department',
                 'Add a Department',
                 'Add a Role',
                 'Add an Employee',
                 'Update an Employee Role',
+                'Update an Employee Manager',
                 'Delete a Department',
                 'Delete a Role',
                 'Delete an Employee',
                 'Quit'
-                // *BONUS*
-                // update employee managers, 
-                // view employees by manager,
-                // view employees by department,
-                // delete department,
-                // delete roles,
-                // delete employees
             ]
         }
     ]

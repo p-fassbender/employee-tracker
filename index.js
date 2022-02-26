@@ -23,6 +23,12 @@ const init = () => {
                 case 'View All Employees': // done
                     emp.displayEmployees(init);
                     break;
+                case 'View Employees by Manager':
+                    emp.displayEmpByManager(init); // done 
+                    break;
+                case 'View Employees by Department':
+                    emp.displayEmpByDepartment(init); // done 
+                    break;
                 case 'Add a Department': // done
                     dept.addDepartment(init);
                     break;
@@ -34,6 +40,9 @@ const init = () => {
                     break;
                 case 'Update an Employee Role':
                     emp.updateEmployeeRole(init); // done
+                    break;
+                case 'Update an Employee Manager':
+                    emp.updateEmployeeManager(init); // done
                     break;
                 case 'Delete a Department':
                     dept.deleteDepartment(init); // done

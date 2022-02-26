@@ -98,6 +98,30 @@ const updateEmployeeRolePrompt = (roleRows, employeeRows) => {
     return inquirer.prompt(updateEmployeeRoleQuestions);
 }
 
+const updateEmployeeManagerPrompt = (employeeRows) => {
+    let newEmployeeRows = employeeRows.map(({ id, first_name, last_name }) => {
+        return {
+            name: first_name + " " + last_name,
+            value: id
+        }
+    });
+    const updateEmployeeRoleQuestions = [
+        {
+            type: 'list', // needs to be a list
+            name: 'updatedEmployeeName',
+            message: "Which employee's manager do you want to update?",
+            choices: newEmployeeRows
+        },
+        {
+            type: 'list', // needs to be a list
+            name: 'updatedEmployeeManager',
+            message: "Who is this employee's manager?",
+            choices: newEmployeeRows
+        }
+    ]
+    return inquirer.prompt(updateEmployeeRoleQuestions);
+}
+
 // employee ids, first names, last names, job titles, departments, salaries, and managers
 const getEmployees = () => {
     let sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee employee
@@ -107,8 +131,42 @@ const getEmployees = () => {
     return db.promise().query(sql)
 }
 
+const getEmpByManager = () => {
+    let sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee employee
+        LEFT JOIN role ON employee.role_id = role.id 
+        LEFT JOIN department on department.id = role.department_id
+        LEFT JOIN employee manager ON employee.manager_id = manager.id
+        ORDER BY manager`
+    return db.promise().query(sql)
+}
+
+const getEmpByDepartment = () => {
+    let sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee employee
+        LEFT JOIN role ON employee.role_id = role.id 
+        LEFT JOIN department on department.id = role.department_id
+        LEFT JOIN employee manager ON employee.manager_id = manager.id
+        ORDER BY department`
+    return db.promise().query(sql)
+}
+
 const displayEmployees = (init) => {
     getEmployees()
+        .then(([rows]) => {
+            console.table(rows);
+            init()
+        })
+}
+
+const displayEmpByManager = (init) => {
+    getEmpByManager()
+        .then(([rows]) => {
+            console.table(rows);
+            init()
+        })
+}
+
+const displayEmpByDepartment = (init) => {
+    getEmpByDepartment()
         .then(([rows]) => {
             console.table(rows);
             init()
@@ -146,6 +204,18 @@ const updateEmployeeRole = async (init) => {
         })
 }
 
+const updateEmployeeManager = async (init) => {
+    let [employeeRows] = await getEmployees();
+    updateEmployeeManagerPrompt(employeeRows)
+        .then((answers) => {
+            console.log(answers)
+            let sql = `UPDATE employee SET manager_id = (?) WHERE employee.id = (?)`;
+            let params = [answers.updatedEmployeeManager, answers.updatedEmployeeName]
+            db.query(sql, params);
+            init()
+        })
+}
+
 const deleteEmployee = async (init) => {
     let [employeeRows] = await getEmployees();
     employeeDeletePrompt(employeeRows)
@@ -160,8 +230,12 @@ const deleteEmployee = async (init) => {
 module.exports = {
     employeeAddPrompt,
     getEmployees,
+    getEmpByManager,
     displayEmployees,
+    displayEmpByManager,
+    displayEmpByDepartment,
     addEmployee,
     updateEmployeeRole,
+    updateEmployeeManager,
     deleteEmployee
 }
