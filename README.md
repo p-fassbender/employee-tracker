@@ -41,9 +41,8 @@ There are no formal tests for this project
 ---
 
 ## Media
-insert video link here
 
-insert screenshot here
+https://user-images.githubusercontent.com/36012762/155909696-2ad1aa9d-8c18-44cf-a41a-d6c09274255c.mp4
 
 The following link is to this project's github repository
 https://github.com/p-fassbender/employee-tracker
