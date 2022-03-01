@@ -7,7 +7,6 @@ const { menuPrompt } = require('./utils/menu')
 
 db.connect(err => {
     if (err) throw err;
-    console.log('Database connected.');
 });
 
 const init = () => {
